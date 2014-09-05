@@ -30,8 +30,8 @@ end
 
 cookbook_file node['ca-certificates']['ca-bundle_path'] do
   source "ca-bundle.crt"
-  owner root
-  group root
+  owner "root"
+  group "root"
   mode "0644"
   action :create
 end
