@@ -28,10 +28,16 @@ package node['ca-certificates']['package'] do
   action :install
 end
 
-cookbook_file node['ca-certificates']['ca-bundle_path'] do
-  source "ca-bundle.crt"
-  owner "root"
-  group "root"
-  mode "0644"
-  action :create
+execute 'update-ca-certs' do
+  command node['ca-certificates']['update_command']
+  action :nothing
 end
+
+remote_directory node['ca-certificates']['certificates_directory'] do
+  owner node['ca-certificates']['owner']
+  group node['ca-certificates']['group']
+  action :create
+  source 'certificates_directory'
+  notifies :run, 'execute[update-ca-certs]', :immediately
+end
+
