@@ -28,16 +28,23 @@ package node['ca-certificates']['package'] do
   action :install
 end
 
-execute 'update-ca-certs' do
-  command node['ca-certificates']['update_command']
-  action :nothing
-end
+if platform_family?('rhel') and node['platform_version'] =~ /^5\./
+  cookbook_file node['ca-certificates']['ca-bundle_path'] do
+    owner node['ca-certificates']['owner']
+    owner node['ca-certificates']['group']
+    source 'ca-bundle.crt'
+  end
+else
+  execute 'update-ca-certs' do
+    command node['ca-certificates']['update_command']
+    action :nothing
+  end
 
-remote_directory node['ca-certificates']['certificates_directory'] do
-  owner node['ca-certificates']['owner']
-  group node['ca-certificates']['group']
-  action :create
-  source 'certificates_directory'
-  notifies :run, 'execute[update-ca-certs]', :immediately
+  remote_directory node['ca-certificates']['certificates_directory'] do
+    owner node['ca-certificates']['owner']
+    group node['ca-certificates']['group']
+    action :create
+    source 'certificates_directory'
+    notifies :run, 'execute[update-ca-certs]', :immediately
+  end
 end
-
