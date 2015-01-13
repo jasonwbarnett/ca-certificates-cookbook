@@ -5,10 +5,10 @@ case node['platform_family']
     default['ca-certificates']['update_command'] = '/usr/bin/update-ca-trust'
     default['ca-certificates']['owner'] = 'root'
     default['ca-certificates']['group'] = 'root'
-    case node['platform_version']
-      when /^5\./
+    case node['platform_version'].to_i
+      when 5
         default['ca-certificates']['package'] = 'openssl'
-      when /^6\./
+      when 6
         default['ca-certificates']['package'] = 'ca-certificates'
       else
         default['ca-certificates']['package'] = 'ca-certificates'
