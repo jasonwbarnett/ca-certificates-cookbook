@@ -39,9 +39,9 @@ if platform_family?('rhel')
     group node['root_group']
     source 'ca-bundle.crt'
     action :nothing
-    subscribes :run, "package[#{node['ca-certificates']['package']}]",                         :immediately
-    subscribes :run, "remote_directory[#{node['ca-certificates']['certificates_directory']}]", :immediately
-    notifies   :run, 'execute[append_certs_to_ca-bundle]',                                     :delayed
+    subscribes :create, "package[#{node['ca-certificates']['package']}]",                         :immediately
+    subscribes :create, "remote_directory[#{node['ca-certificates']['certificates_directory']}]", :immediately
+    notifies   :run,    "execute[append_certs_to_ca-bundle]",                                     :delayed
   end
 end
 
