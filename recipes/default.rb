@@ -38,17 +38,16 @@ if platform_family?('rhel')
     owner 'root'
     group node['root_group']
     source 'ca-bundle.crt'
-    action :nothing
-    notifies :run, 'execute[append_certs_to_ca-bundle]', :immediately
+    action :create
+    notifies :run, 'execute[append_certs_to_ca-bundle]', :delayed
   end
-elsif platform_family?('debian')
+end
+
+if platform_family?('debian') || node['ca-certificates']['update-ca-trust']
   execute 'update-ca-certs' do
     command node['ca-certificates']['update_command']
     action :nothing
   end
-else
-  log "This cookbook only supports rhel and debian platform families."
-  return
 end
 
 remote_directory node['ca-certificates']['certificates_directory'] do
@@ -57,6 +56,7 @@ remote_directory node['ca-certificates']['certificates_directory'] do
   action :create
   source 'certificates_directory'
   notifies :create, "cookbook_file[#{node['ca-certificates']['ca-bundle_file']}]", :immediately  if platform_family?('rhel')
-  notifies :run, 'execute[update-ca-certs]', :immediately                                        if platform_family?('debian')
+  notifies :run, 'execute[append_certs_to_ca-bundle]', :immediately
+  notifies :run, 'execute[update-ca-certs]', :immediately                                        if platform_family?('debian') || node['ca-certificates']['update-ca-trust']
 end
 
