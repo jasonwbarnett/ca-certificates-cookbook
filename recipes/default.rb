@@ -44,6 +44,8 @@ if platform_family?('rhel')
     command "cat #{node['ca-certificates']['certificates_directory']}/* >> #{node['ca-certificates']['ca-bundle_file']}"
     action :nothing
 
+    only_if { Dir.glob('/etc/pki/ca-trust/source/anchors/*').length > 0 }
+
     # This seems like a duplicate, but it is not. Do not chain these together.
     subscribes :run, "package[#{node['ca-certificates']['package']}]",                         :immediately
     subscribes :run, "remote_directory[#{node['ca-certificates']['certificates_directory']}]", :immediately
