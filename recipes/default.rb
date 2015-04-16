@@ -29,19 +29,24 @@ package node['ca-certificates']['package'] do
 end
 
 if platform_family?('rhel')
-  execute "append_certs_to_ca-bundle" do
-    command "cat #{node['ca-certificates']['certificates_directory']}/* >> #{node['ca-certificates']['ca-bundle_file']}"
-    action :nothing
-  end
-
   cookbook_file node['ca-certificates']['ca-bundle_file'] do
     owner 'root'
     group node['root_group']
     source 'ca-bundle.crt'
     action :nothing
+
+    # This seems like a duplicate, but it is not. Do not chain these together.
     subscribes :create, "package[#{node['ca-certificates']['package']}]",                         :immediately
     subscribes :create, "remote_directory[#{node['ca-certificates']['certificates_directory']}]", :immediately
-    notifies   :run,    "execute[append_certs_to_ca-bundle]",                                     :immediately
+  end
+
+  execute "append_certs_to_ca-bundle" do
+    command "cat #{node['ca-certificates']['certificates_directory']}/* >> #{node['ca-certificates']['ca-bundle_file']}"
+    action :nothing
+
+    # This seems like a duplicate, but it is not. Do not chain these together.
+    subscribes :run, "package[#{node['ca-certificates']['package']}]",                         :immediately
+    subscribes :run, "remote_directory[#{node['ca-certificates']['certificates_directory']}]", :immediately
   end
 end
 
@@ -49,6 +54,8 @@ if platform_family?('debian') || node['ca-certificates']['update-ca-trust']
   execute 'update-ca-certs' do
     command node['ca-certificates']['update_command']
     action :nothing
+
+    # This seems like a duplicate, but it is not. Do not chain these together.
     subscribes :run, "package[#{node['ca-certificates']['package']}]",                         :immediately
     subscribes :run, "remote_directory[#{node['ca-certificates']['certificates_directory']}]", :immediately
   end
