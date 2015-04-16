@@ -25,7 +25,7 @@
 #
 
 package node['ca-certificates']['package'] do
-  action :install
+  action :upgrade
 end
 
 if platform_family?('rhel')
@@ -38,8 +38,10 @@ if platform_family?('rhel')
     owner 'root'
     group node['root_group']
     source 'ca-bundle.crt'
-    action :create
-    notifies :run, 'execute[append_certs_to_ca-bundle]', :delayed
+    action :nothing
+    subscribes :run, "package[#{node['ca-certificates']['package']}]",                         :immediately
+    subscribes :run, "remote_directory[#{node['ca-certificates']['certificates_directory']}]", :immediately
+    notifies   :run, 'execute[append_certs_to_ca-bundle]',                                     :delayed
   end
 end
 
@@ -47,6 +49,8 @@ if platform_family?('debian') || node['ca-certificates']['update-ca-trust']
   execute 'update-ca-certs' do
     command node['ca-certificates']['update_command']
     action :nothing
+    subscribes :run, "package[#{node['ca-certificates']['package']}]",                         :immediately
+    subscribes :run, "remote_directory[#{node['ca-certificates']['certificates_directory']}]", :immediately
   end
 end
 
@@ -55,8 +59,5 @@ remote_directory node['ca-certificates']['certificates_directory'] do
   group node['root_group']
   action :create
   source 'certificates_directory'
-  notifies :create, "cookbook_file[#{node['ca-certificates']['ca-bundle_file']}]", :immediately  if platform_family?('rhel')
-  notifies :run, 'execute[append_certs_to_ca-bundle]', :immediately
-  notifies :run, 'execute[update-ca-certs]', :immediately                                        if platform_family?('debian') || node['ca-certificates']['update-ca-trust']
 end
 
