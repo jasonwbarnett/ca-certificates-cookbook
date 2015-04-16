@@ -41,7 +41,7 @@ if platform_family?('rhel')
     action :nothing
     subscribes :create, "package[#{node['ca-certificates']['package']}]",                         :immediately
     subscribes :create, "remote_directory[#{node['ca-certificates']['certificates_directory']}]", :immediately
-    notifies   :run,    "execute[append_certs_to_ca-bundle]",                                     :delayed
+    notifies   :run,    "execute[append_certs_to_ca-bundle]",                                     :immediately
   end
 end
 
