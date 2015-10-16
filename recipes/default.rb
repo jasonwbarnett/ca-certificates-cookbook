@@ -28,11 +28,19 @@ package node['ca-certificates']['package'] do
   action :upgrade
 end
 
+remote_directory node['ca-certificates']['certificates_directory'] do
+  owner 'root'
+  group node['root_group']
+  action :create
+  source 'certificates_directory'
+end
+
 if platform_family?('rhel')
   cookbook_file node['ca-certificates']['ca-bundle_file'] do
     owner 'root'
     group node['root_group']
     source 'ca-bundle.crt'
+    manage_symlink_source true
     action :nothing
 
     # This seems like a duplicate, but it is not. Do not chain these together.
@@ -52,7 +60,7 @@ if platform_family?('rhel')
   end
 end
 
-if platform_family?('debian') || node['ca-certificates']['update-ca-trust']
+if node['ca-certificates']['update-ca-trust']
   execute 'update-ca-certs' do
     command node['ca-certificates']['update_command']
     action :nothing
@@ -62,11 +70,3 @@ if platform_family?('debian') || node['ca-certificates']['update-ca-trust']
     subscribes :run, "remote_directory[#{node['ca-certificates']['certificates_directory']}]", :immediately
   end
 end
-
-remote_directory node['ca-certificates']['certificates_directory'] do
-  owner 'root'
-  group node['root_group']
-  action :create
-  source 'certificates_directory'
-end
-
