@@ -12,6 +12,9 @@ case node['platform_family']
       when 6
         default['ca-certificates']['package'] = 'ca-certificates'
         default['ca-certificates']['update-ca-trust'] = true
+      when 7
+        default['ca-certificates']['package'] = 'ca-certificates'
+        default['ca-certificates']['update-ca-trust'] = true
       else
         default['ca-certificates']['package'] = 'ca-certificates'
         default['ca-certificates']['update-ca-trust'] = true
