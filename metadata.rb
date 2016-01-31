@@ -1,5 +1,5 @@
 name             'ca-certificates'
-maintainer       'Jason Barnett - Mindjet LLC'
+maintainer       'Jason Barnett'
 maintainer_email 'J@sonBarnett.com'
 license          'MIT'
 description      'Installs/Configures ca-certificates'

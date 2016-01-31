@@ -2,7 +2,7 @@
 # Cookbook Name:: ca-certificates
 # Recipe:: default
 #
-# Copyright 2014, Jason Barnett - Mindjet LLC
+# Copyright 2015, Jason Barnett
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
