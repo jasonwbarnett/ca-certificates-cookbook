@@ -49,7 +49,7 @@ if platform_family?('rhel')
   end
 
   execute "append_certs_to_ca-bundle" do
-    command "cat #{node['ca-certificates']['certificates_directory']}/* >> #{node['ca-certificates']['ca-bundle_file']}"
+    command "cat #{node['ca-certificates']['certificates_directory']}/*.pem >> #{node['ca-certificates']['ca-bundle_file']}"
     action :nothing
 
     only_if { Dir.glob('/etc/pki/ca-trust/source/anchors/*').length > 0 }
