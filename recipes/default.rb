@@ -52,7 +52,7 @@ if platform_family?('rhel')
     command "cat #{node['ca-certificates']['certificates_directory']}/*.pem >> #{node['ca-certificates']['ca-bundle_file']}"
     action :nothing
 
-    only_if { Dir.glob("#{node['ca-certificates']['certificates_directory']}/*").length > 0 }
+    only_if { Dir.glob("#{node['ca-certificates']['certificates_directory']}/*.pem").length > 0 }
 
     # This seems like a duplicate, but it is not. Do not chain these together.
     subscribes :run, "package[#{node['ca-certificates']['package']}]",                         :immediately
