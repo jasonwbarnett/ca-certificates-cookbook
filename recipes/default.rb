@@ -48,11 +48,11 @@ if platform_family?('rhel')
     subscribes :create, "remote_directory[#{node['ca-certificates']['certificates_directory']}]", :immediately
   end
 
-  execute "append_certs_to_ca-bundle" do
+  execute 'append_certs_to_ca-bundle' do
     command "cat #{node['ca-certificates']['certificates_directory']}/*.pem >> #{node['ca-certificates']['ca-bundle_file']}"
     action :nothing
 
-    only_if { Dir.glob("#{node['ca-certificates']['certificates_directory']}/*.pem").length > 0 }
+    only_if { !Dir.glob("#{node['ca-certificates']['certificates_directory']}/*.pem").empty? }
 
     # This seems like a duplicate, but it is not. Do not chain these together.
     subscribes :run, "package[#{node['ca-certificates']['package']}]",                         :immediately

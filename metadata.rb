@@ -10,5 +10,5 @@ version          '0.1.3'
   supports os
 end
 
-source_url 'https://github.com/jasonwbarnett/ca-certificates-cookbook' if respond_to?(:source_url)
-issues_url 'https://github.com/jasonwbarnett/ca-certificates-cookbook/issues' if respond_to?(:issues_url)
+source_url 'https://github.com/jasonwbarnett/ca-certificates-cookbook'
+issues_url 'https://github.com/jasonwbarnett/ca-certificates-cookbook/issues'
