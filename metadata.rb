@@ -5,6 +5,7 @@ license          'MIT'
 description      'Installs/Configures ca-certificates'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          '0.2.0'
+chef_version     '>= 11.8.0' if respond_to?(:chef_version)
 
 %w( redhat centos amazon scientific oracle debian ).each do |os|
   supports os
